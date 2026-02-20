@@ -57,21 +57,32 @@ jobs:
           HF_USERNAME: ${{ secrets.HF_USERNAME }}
           HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
         run: |
-          # Only run if HF_TOKEN is set
+          # 1. Debug Checks (Secrets are masked by GitHub automatically)
           if [ -z "$HF_TOKEN" ]; then
-            echo "HF_TOKEN not found. Skipping deployment."
-            exit 0
+            echo "❌ Error: HF_TOKEN secret is missing."
+            exit 1
           fi
-          
+          if [ -z "$HF_USERNAME" ]; then
+             echo "❌ Error: HF_USERNAME secret is missing."
+             exit 1
+          fi
+          if [ -z "$HF_SPACE_NAME" ]; then
+             echo "❌ Error: HF_SPACE_NAME secret is missing."
+             exit 1
+          fi
+
+          echo "✅ All secrets present. Preparing to push to Space: $HF_USERNAME/$HF_SPACE_NAME"
+
+          # 2. Configure Git
           git config --global user.email "action@github.com"
           git config --global user.name "GitHub Action"
           
-          # Install git-lfs just in case
-          git lfs install
+          # 3. Setup Remote
+          # We use the token in the URL for authentication
+          REMOTE_URL="https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME"
           
-          # Add HF remote with embedded credentials
-          # This URL construction is safe because the secrets are masked in logs
-          git remote add space https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME
+          git remote add space "$REMOTE_URL"
           
-          # Force push to the Space
-          git push --force space main
+          # 4. Push
+          echo "🚀 Pushing to Hugging Face..."
+          git push --force space main:main
