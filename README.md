@@ -1,4 +1,5 @@
 # 🔄 CureLoop-MLOps: Automated Disease Prediction Pipeline
+![MLOps Pipeline](https://github.com/mayank-goyal09/CureLoop-MLOps/actions/workflows/main.yml/badge.svg)
 
 > **"Transforming static notebooks into a living, breathing AI system."**
 
