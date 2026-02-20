@@ -1,4 +1,4 @@
-name: MLOps Pipeline Check 🚀
+name: MLOps Pipeline 🚀
 
 on:
   push:
@@ -7,12 +7,15 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-test:
+  build-train-test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout Code 🔍
       uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        lfs: true
 
     - name: Set up Python 🐍
       uses: actions/setup-python@v4
@@ -24,11 +27,51 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run Lint Check 🧹
+    - name: Retrain Model 🧠
       run: |
-        # This checks for syntax errors without running the code
-        python -m compileall .
+        python train.py
 
-    - name: Test Docker Build 🐳
+    - name: Run Tests 🧪
+      run: |
+        pytest app/test_main.py
+
+    - name: Build Docker Image 🐳
       run: |
         docker build -t medicine-app .
+
+  # Sync to Hugging Face Hub - The "Free Alternative" Deployment
+  sync-to-hub:
+    needs: build-train-test
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          lfs: true
+      
+      - name: Push to Hugging Face Hub 🤗
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_USERNAME: ${{ secrets.HF_USERNAME }}
+          HF_SPACE_NAME: ${{ secrets.HF_SPACE_NAME }}
+        run: |
+          # Only run if HF_TOKEN is set
+          if [ -z "$HF_TOKEN" ]; then
+            echo "HF_TOKEN not found. Skipping deployment."
+            exit 0
+          fi
+          
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          
+          # Install git-lfs just in case
+          git lfs install
+          
+          # Add HF remote with embedded credentials
+          # This URL construction is safe because the secrets are masked in logs
+          git remote add space https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME
+          
+          # Force push to the Space
+          git push --force space main
