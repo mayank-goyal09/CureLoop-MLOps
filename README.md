@@ -18,6 +18,7 @@ pinned: false
 <br/>
 
 ![MLOps Pipeline](https://github.com/mayank-goyal09/CureLoop-MLOps/actions/workflows/main.yml/badge.svg)
+[![Streamlit App](https://img.shields.io/badge/Streamlit-Try_App_Here-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://cureloop-mlops-projects.streamlit.app/)
 [![API Status](https://img.shields.io/badge/🔴_Live_API-Online-brightgreen?style=for-the-badge&logo=fastapi&logoColor=white)](https://mayankg09-cureloop-mlops.hf.space/docs)
 [![Hugging Face](https://img.shields.io/badge/🤗_Hugging_Face-Deployed-yellow?style=for-the-badge)](https://huggingface.co/spaces/mayankg09/cureLoop-mLOps)
 [![Docker](https://img.shields.io/badge/Docker-Containerized-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://mayankg09-cureloop-mlops.hf.space/)
@@ -30,7 +31,8 @@ pinned: false
 
 <br/>
 
-### 🌐 [**👉 Try the Live API →**](https://mayankg09-cureloop-mlops.hf.space/docs)
+### 🌐 [**👉 Try the AI App (Streamlit) →**](https://cureloop-mlops-projects.streamlit.app/)
+### 🧑‍💻 [**👉 Explore the API (FastAPI) →**](https://mayankg09-cureloop-mlops.hf.space/docs)
 
 </div>
 
